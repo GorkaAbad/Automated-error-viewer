@@ -1,0 +1,29 @@
+{
+      "tags": [
+        "python",
+        "python-3.x",
+        "ctypes",
+        "libc",
+        "getaddrinfo"
+      ],
+      "owner": {
+        "reputation": 20168,
+        "user_id": 1319998,
+        "user_type": "registered",
+        "accept_rate": 58,
+        "profile_image": "https://www.gravatar.com/avatar/9f600f4583bec89109ce8c0c098951ae?s=128&d=identicon&r=PG",
+        "display_name": "Michal Charemza",
+        "link": "https://stackoverflow.com/users/1319998/michal-charemza"
+      },
+      "is_answered": true,
+      "view_count": 49,
+      "accepted_answer_id": 53584085,
+      "answer_count": 1,
+      "score": 2,
+      "last_activity_date": 1543781888,
+      "creation_date": 1543698796,
+      "last_edit_date": 1543705521,
+      "question_id": 53575101,
+      "link": "https://stackoverflow.com/questions/53575101/calling-getaddrinfo-directly-from-python-ai-addr-is-null-pointer",
+      "title": "Calling getaddrinfo directly from Python: ai_addr is null pointer"
+    },
