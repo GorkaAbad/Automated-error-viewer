@@ -5,6 +5,7 @@ This application is used for automatically searching errors in stack overflow.
 ## Usage
 
 Make sure python is installed.
+Currently only tested with Python files. Working on adding support to other languages.
 ```
 python3 stackError.py <path to the file you want to execute> <arguments if needed>
 ```
