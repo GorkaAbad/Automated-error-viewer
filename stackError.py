@@ -1,56 +1,21 @@
 import urllib.request
 
-import json
-
 import sys
 
 import subprocess
 
-filePath = sys.argv[1].lower()
+import urllib.parse
 
-langugage =get_language(filePath)
+import requests 
 
- 
-
-error = ""
-
-baseUrl ="https://api.stackexchange.com/2.2/"
-
-search = "search?order=desc&sort=relevance"
-
-tag="&tagged=" + language
-
-title= "&intitle=" + error
-
-site ="&site=stackoverflow"
-
- 
-
-#Conseguir el error y el lenguaje de programacion
-
- 
-
-url = baseUrl + search + tag + title + site
-
- 
-
-execute(filePath)
-
-response = make_request(url)
-
-manage_response(response)
-
- 
+import webbrowser
 
 #Ejecuta el archivo que pasan como parametro
 
 def execute(path):
 
+    print("Ejecutando el archivo: " , path)
     #execfile(path)
-
-    #or
-
-    exec(open(path).read())
 
     #or
 
@@ -58,6 +23,27 @@ def execute(path):
 
     #theproc.communicate()
 
+    globals=None
+    locals=None
+    description=''
+    try:
+        exec(open(path).read())
+    except SyntaxError as err:
+        print("Error de sintaxis")
+        error_class = err.__class__.__name__
+        detail = err.args[0]
+        line_number = err.lineno
+    except Exception as err:
+        print("Otra excepcion")
+        error_class = err.__class__.__name__
+        detail = err.args[0]
+        cl, exc, tb = sys.exc_info()
+        line_number = traceback.extract_tb(tb)[-1][1]
+    else:
+        return
+    print("Tienes un error")
+    print("%s at line %d of %s: %s" % (error_class, line_number, description, detail))
+    return detail
  
 
 def run_command(command):
@@ -74,9 +60,9 @@ def run_command(command):
 
         if output:
 
-            print output.strip('0')
+            #print output.strip('0')
 
-    rc = process.poll()
+         rc = process.poll()
 
     return rc
 
@@ -86,17 +72,19 @@ def run_command(command):
 
 def make_request(url):
 
-    response = urllib.request.urlopen(url).read()
+    print("Haciendo la peticion")
 
-    return response
+    response = requests.get(url)
+
+    return response.json(), response.status_code
 
  
 
 #Gestiona la respuesta
 
-def manage_response(response):
+def manage_response(response, status):
 
-    status = response.status
+    print("Gestionando la respuesta")
 
     content = ""
 
@@ -110,64 +98,53 @@ def manage_response(response):
 
     answers = {}
 
- 
+    
+    print("Status: " , status)
 
     if status == 200:
 
         print("    ANSWERS FOUND   ")
 
-        content = response.content
-
-        contentJson = content.loads(content)
-
-        for items in contentJson["items"]:
+        for items in response["items"]:
 
             title = items["title"]
 
             link = items["link"]
 
+            score = items["score"]
+
             answer_count = items["answer_count"]
 
-            aceptedAnswer = items["accepted_answer_id"]
+            answered = items["is_answered"]
 
             answers.update({cont : link})
 
-            print("  #" , cont , "  " , title , " Answers: " , answer_count)
+            print("  #" , cont , "  " , title , "Score: " , score ,  " Answers: " , answer_count, "Answered?: " , answered)
 
             print("")
 
+            cont = cont + 1
  
 
+        print("Or type 'n' to close.")
         print("So... which one you choose?")
 
         selection = input("Please enter a number: ")
 
- 
-
-        while selection < 0 and selection > cont:
+        if selection == 'n':
+            sys.exit()
+        while int(selection) < 0 or int(selection) > cont:
 
             selection = input("Please enter a number: ")
 
- 
-
-        manage_answers(answers.get(input))
+        manage_answers(answers[int(selection)])
 
  
 
 #Hace una peticion a la url con la respuesta de la pregunta
 
 def manage_answers(url):
-
-    response = make_request(url)
-
- 
-
-    #Web scraping?
-
- 
-
- 
-
+    webbrowser.open_new(url)
  
 
 def get_language(file):
@@ -202,3 +179,36 @@ def get_language(file):
 
     else:
         raise Exception("Language unknown.") #Error, lenguaje no conocido
+
+
+
+filePath = sys.argv[1].lower()
+
+print("Detectando lenguaje ...")
+language = get_language(filePath)
+print("lenguaje: " , language)
+ 
+
+#Conseguir el error y el lenguaje de programacion
+
+error = execute(filePath)
+
+if error != None:
+    baseUrl ="https://api.stackexchange.com/2.2/"
+
+    search = "search?order=desc&sort=relevance"
+
+    tag="&tagged=" + language
+
+    error = urllib.parse.quote(error)
+    title= "&intitle=" + error
+
+    site ="&site=stackoverflow"
+
+    url = baseUrl + search + tag + title + site
+
+    print("Url generada: " , url)
+
+    response, status = make_request(url)
+
+    manage_response(response, status)
