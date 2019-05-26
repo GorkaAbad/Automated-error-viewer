@@ -6,12 +6,6 @@ import sys
 
 import subprocess
 
- 
-
- 
-
- 
-
 filePath = sys.argv[1].lower()
 
 langugage =get_language(filePath)
@@ -52,17 +46,17 @@ manage_response(response)
 
 def execute(path):
 
-    execfile(path)
+    #execfile(path)
 
     #or
 
-    exec(open(path).read)
+    exec(open(path).read())
 
     #or
 
-    theproc = subprocess.Popen([sys.executable, path])
+    #theproc = subprocess.Popen([sys.executable, path])
 
-    theproc.communicate()
+    #theproc.communicate()
 
  
 
@@ -80,7 +74,7 @@ def run_command(command):
 
         if output:
 
-            print output.strip()
+            print output.strip('0')
 
     rc = process.poll()
 
@@ -138,7 +132,7 @@ def manage_response(response):
 
             answers.update({cont : link})
 
-            print("  #" + cont + "  " + title " Answers: " + answer_count)
+            print("  #" , cont , "  " , title , " Answers: " , answer_count)
 
             print("")
 
@@ -206,6 +200,5 @@ def get_language(file):
 
         return "C"
 
-    else
-
+    else:
         raise Exception("Language unknown.") #Error, lenguaje no conocido
