@@ -117,9 +117,9 @@ def manage_response(response, status):
 
         selection = input("Please enter a number: ")
 
-        if selection == 'n':
+        if selection == 'n' or selection == '' or not int(selection):
             sys.exit()
-        while int(selection) < 0 or int(selection) > cont:
+        while int(selection) <= 0 or int(selection) > cont:
 
             selection = input("Please enter a number: ")
 
